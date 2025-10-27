@@ -1,4 +1,4 @@
-import type { Piece, Square } from "./types";
+import type { Piece, Square, Color, PieceType } from "./types";
 
 export class Board {
     private squares: Map<Square, Piece>;
@@ -9,31 +9,46 @@ export class Board {
     }
 
     private initializeBoard():void {
-        // white pieces (king, queen)
-        this.squares.set('e1', {
-            type: 'king',
-            color: 'white',
-            position: 'e1',
-            hasMoved: false
-        });
-        this.squares.set('d1', {
-            type: 'queen',
-            color: 'white',
-            position: 'd1',
-            hasMoved: false
-        });
+        // white pieces back ranks
+        this.setupBackRank('white', '1');
+        this.setUpPawns('white', '2');
 
-        // black pieces (king, queen)
-        this.squares.set('e8', {
-            type: 'king',
-            color: 'black',
-            position: 'e8',
-            hasMoved: false
-        });
-        this.squares.set('d8', {
-            type: 'queen',
-            color: 'black',
-            position: 'd8',
+        // set up black pieces
+        this.setupBackRank('black', '8');
+        this.setUpPawns('black', '7');
+    }
+
+    private setupBackRank(color: Color, rank: string): void {
+        // Rooks in the corner
+        this.setPiece(`a${rank}`, 'rook', color);
+        this.setPiece(`h${rank}`, 'rook', color);
+
+        // knights next to rooks
+        this.setPiece(`b${rank}`, 'knight', color);
+        this.setPiece(`g${rank}`, 'knight', color);
+
+        // bishops next to bishops
+        this.setPiece(`c${rank}`, 'bishop', color);
+        this.setPiece(`f${rank}`, 'bishop', color);
+
+        // set queen & king
+        this.setPiece(`d${rank}`, 'queen', color);
+        this.setPiece(`e${rank}`, 'king', color);
+    }
+
+    private setUpPawns(color: Color, rank: string): void {
+        const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+        for (const col of cols) {
+            this.setPiece(`${col}${rank}`, 'pawn', color);
+        }
+    }
+
+    private setPiece(position: Square, type: PieceType, color: Color): void {
+        this.squares.set(position, {
+            type,
+            color,
+            position,
             hasMoved: false
         });
     }
