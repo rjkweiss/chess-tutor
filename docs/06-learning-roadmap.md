@@ -28,10 +28,10 @@ This roadmap balances **learning** with **building**. Each week focuses on speci
 - [x] Create documentation structure
 - [x] Design data models
 - [x] Set up GitHub repository
-- [ ] Initialize frontend (React + TypeScript)
-- [ ] Initialize backend (FastAPI)
-- [ ] Set up testing frameworks
-- [ ] Write first passing test
+- [x] Initialize frontend (React + TypeScript)
+- [x] Initialize backend (FastAPI)
+- [x] Set up testing frameworks
+- [x] Write first passing test
 
 **Deliverables:**
 - Complete `/docs` folder with all planning documents
@@ -57,9 +57,9 @@ This roadmap balances **learning** with **building**. Each week focuses on speci
 
 **Tasks:**
 - [ ] Implement `Board` class (with tests)
-  - Initialize starting position
-  - Get/set pieces
-  - FEN notation support (reading)
+  - [x] Initialize starting position
+  - [x] Get/set pieces
+  - [ ] FEN notation support (reading)
 - [ ] Implement base `Piece` class
 - [ ] Implement `Rook` class with movement logic
 - [ ] Implement `Bishop` class with movement logic
