@@ -56,14 +56,14 @@ This roadmap balances **learning** with **building**. Each week focuses on speci
 **Focus:** TDD, TypeScript classes, OOP design
 
 **Tasks:**
-- [ ] Implement `Board` class (with tests)
+- [x] Implement `Board` class (with tests)
   - [x] Initialize starting position
   - [x] Get/set pieces
   - [ ] FEN notation support (reading)
 - [ ] Implement base `Piece` class
-- [ ] Implement `Rook` class with movement logic
-- [ ] Implement `Bishop` class with movement logic
-- [ ] Write comprehensive tests for each class
+- [x] Implement `Rook` class with movement logic
+- [x] Implement `Bishop` class with movement logic
+- [] Write comprehensive tests for each class
 
 **Deliverables:**
 - Board representation working
