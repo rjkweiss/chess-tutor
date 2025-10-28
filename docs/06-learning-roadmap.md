@@ -60,10 +60,10 @@ This roadmap balances **learning** with **building**. Each week focuses on speci
   - [x] Initialize starting position
   - [x] Get/set pieces
   - [ ] FEN notation support (reading)
-- [ ] Implement base `Piece` class
+- [x] Implement base `Piece` class
 - [x] Implement `Rook` class with movement logic
 - [x] Implement `Bishop` class with movement logic
-- [] Write comprehensive tests for each class
+- [x] Write comprehensive tests for each class
 
 **Deliverables:**
 - Board representation working
@@ -110,7 +110,7 @@ test('rook moves horizontally', () => {
 **Focus:** Complex movement patterns, edge cases
 
 **Tasks:**
-- [ ] Implement `Queen` class (combines Rook + Bishop)
+- [x] Implement `Queen` class (combines Rook + Bishop)
 - [ ] Implement `King` class (one square, cannot move into check)
 - [ ] Implement `Knight` class (L-shape, jumping)
 - [ ] Implement `Pawn` class (forward moves, diagonal captures)
