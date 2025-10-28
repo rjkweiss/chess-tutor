@@ -3,9 +3,11 @@ import type { Piece, Square, Color, PieceType } from "./types";
 export class Board {
     private squares: Map<Square, Piece>;
 
-    constructor() {
+    constructor(initialize: boolean = true) {
         this.squares = new Map();
-        this.initializeBoard();
+        if (initialize) {
+            this.initializeBoard();
+        }
     }
 
     private initializeBoard():void {
@@ -37,10 +39,10 @@ export class Board {
     }
 
     private setUpPawns(color: Color, rank: string): void {
-        const cols = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+        const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-        for (const col of cols) {
-            this.setPiece(`${col}${rank}`, 'pawn', color);
+        for (const file of files) {
+            this.setPiece(`${file}${rank}`, 'pawn', color);
         }
     }
 
@@ -51,6 +53,10 @@ export class Board {
             position,
             hasMoved: false
         });
+    }
+
+    placePiece(square: Square, type: PieceType, color: Color): void {
+        this.setPiece(square, type, color);
     }
 
     getPieceAt(square: Square): Piece | null {

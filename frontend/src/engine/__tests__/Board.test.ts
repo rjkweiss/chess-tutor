@@ -95,11 +95,11 @@ describe('Board', () => {
         test('sets up pawns on correct ranks', () => {
             const board = new Board();
 
-            const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
+            const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
 
             // set up white pawns
-            for (const col of cols) {
-                const square = `${col}2`;
+            for (const file of files) {
+                const square = `${file}2`;
                 const pawn = board.getPieceAt(square);
                 expect(pawn).not.toBeNull();
                 expect(pawn?.type).toBe('pawn');
@@ -108,8 +108,8 @@ describe('Board', () => {
             }
 
             // set up black pawns
-            for (const col of cols) {
-                const square = `${col}7`;
+            for (const file of files) {
+                const square = `${file}7`;
                 const pawn = board.getPieceAt(square);
                 expect(pawn).not.toBeNull();
                 expect(pawn?.type).toBe('pawn');
@@ -120,12 +120,12 @@ describe('Board', () => {
 
         test('leaves center squares empty', () => {
             const board = new Board();
-            const cols = ["a", "b", "c", "d", "e", "f", "g", "h"];
+            const files = ["a", "b", "c", "d", "e", "f", "g", "h"];
             const emptyRanks = [3, 4, 5, 6];
 
-            for (const col of cols) {
+            for (const file of files) {
                 for (const rank of emptyRanks) {
-                    const square = `${col}${rank}`;
+                    const square = `${file}${rank}`;
                     const piece = board.getPieceAt(square);
                     expect(piece).toBeNull();
                 }
