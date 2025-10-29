@@ -11,6 +11,11 @@ export abstract class Piece {
     // Each piece defines its own directions
     protected abstract getDirections():[number, number][];
 
+    // Pieces can override if they don't slide e.g. king
+    protected canSlide(): boolean {
+        return true; // default value since most pieces can slide
+    }
+
     // shared method for getting legal moves
     getLegalMoves(board: Board): Square[] {
         const moves: Square[] = [];
@@ -28,17 +33,17 @@ export abstract class Piece {
 
                 if (pieceAtTarget) {
                     // blocking by friendly piece
-                    if (pieceAtTarget.color === this.color) {
-                        break;
-                    } else {
-                        // can capture piece but can't move beyond square
+                    if (pieceAtTarget.color !== this.color) {
                         moves.push(targetSquare);
-                        break;
                     }
+                    break;
+
                 } else {
                     // empty square, piece can move here
                     moves.push(targetSquare);
                 }
+
+                if (!this.canSlide()) break;
 
                 file += fileDir;
                 rank += rankDir;
