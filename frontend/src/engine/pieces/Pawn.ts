@@ -8,6 +8,12 @@ export class Pawn {
         public position: Square
     ) {}
 
+    isPromotionMove(targetSquare: Square): boolean {
+        const targetRank = rankToIndex(targetSquare[1]);
+        const promotionRank = this.color === 'white' ? 7 : 0;
+        return targetRank === promotionRank;
+    }
+
     getLegalMoves(board: Board): Square[] {
         const moves: Square[] = [];
 

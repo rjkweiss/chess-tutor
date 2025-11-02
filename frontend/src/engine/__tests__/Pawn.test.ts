@@ -159,4 +159,60 @@ describe('Pawn', () => {
             expect(legalMoves).toHaveLength(1);
         });
     });
+
+    describe('Pawn Promotion', () => {
+        test('white pawn on 7th rank can promote', () => {
+            const board = new Board(false);
+
+            const pawn = new Pawn('white', 'e7');
+            const legalMoves = pawn.getLegalMoves(board);
+
+            // can move to 8th rank
+            expect(legalMoves).toContain('e8');
+            expect(legalMoves).toHaveLength(1);
+
+            // check promotion went through
+            expect(pawn.isPromotionMove('e8')).toBe(true);
+            expect(pawn.isPromotionMove('e7')).toBe(false);
+        });
+
+        test('black pawn on 2nd rank can promote', () => {
+            const board = new Board(false);
+
+            const pawn = new Pawn('black', 'e2');
+            const legalMoves = pawn.getLegalMoves(board);
+
+            // can move to 1st rank
+            expect(legalMoves).toContain('e1');
+            expect(legalMoves).toHaveLength(1);
+
+            // check promotion
+            expect(pawn.isPromotionMove('e1')).toBe(true);
+            expect(pawn.isPromotionMove('e2')).toBe(false);
+        });
+
+        test('can capture and promote', () => {
+            const board = new Board(false);
+
+            const pawn = new Pawn('white', 'e7');
+
+            // Enemy pieces on 8th rank diagonally
+            board.placePiece('d8', 'knight', 'black');
+            board.placePiece('f8', 'rook', 'black');
+
+            const legalMoves = pawn.getLegalMoves(board);
+
+            // can promote via forward move or capture
+            expect(legalMoves).toContain('e8');
+            expect(legalMoves).toContain('d8');
+            expect(legalMoves).toContain('f8');
+
+            expect(legalMoves).toHaveLength(3);
+
+            // check promotions
+            expect(pawn.isPromotionMove('e8')).toBe(true);
+            expect(pawn.isPromotionMove('d8')).toBe(true);
+            expect(pawn.isPromotionMove('f8')).toBe(true);
+        });
+    });
 });

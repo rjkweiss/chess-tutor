@@ -111,11 +111,11 @@ test('rook moves horizontally', () => {
 
 **Tasks:**
 - [x] Implement `Queen` class (combines Rook + Bishop)
-- [ ] Implement `King` class (one square, cannot move into check)
-- [ ] Implement `Knight` class (L-shape, jumping)
-- [ ] Implement `Pawn` class (forward moves, diagonal captures)
-- [ ] Implement basic check detection
-- [ ] Write tests for all pieces and interactions
+- [x] Implement `King` class (one square, cannot move into check)
+- [x] Implement `Knight` class (L-shape, jumping)
+- [x] Implement `Pawn` class (forward moves, diagonal captures)
+- [x] Implement basic check detection
+- [x] Write tests for all pieces and interactions
 
 **Deliverables:**
 - All pieces move correctly
@@ -154,7 +154,7 @@ test('rook moves horizontally', () => {
 - [ ] Implement stalemate detection
 - [ ] Add special moves:
   - [ ] Castling
-  - [ ] Pawn promotion
+  - [x] Pawn promotion
   - [ ] En passant (optional - can defer)
 - [ ] FEN notation support (writing)
 - [ ] Move history tracking

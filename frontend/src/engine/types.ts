@@ -8,3 +8,10 @@ export interface Piece {
     position: Square;
     hasMoved: boolean;
 }
+
+export interface MoveInfo {
+    square: Square;
+    isPromoted?: boolean;
+    isEnPassant?: boolean;
+    isCastling?: boolean;
+}
