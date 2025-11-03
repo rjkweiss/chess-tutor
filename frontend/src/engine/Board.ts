@@ -9,6 +9,7 @@ import { Pawn } from "./pieces/Pawn";
 
 export class Board {
     private squares: Map<Square, Piece>;
+    private lastMove: {from: Square; to: Square; piece: Piece} | null = null;
 
     constructor(initialize: boolean = true) {
         this.squares = new Map();
@@ -145,6 +146,13 @@ export class Board {
 
         if (!piece) return;
 
+        // store the last move fro en passant detection
+        this.lastMove = {
+            from,
+            to,
+            piece: { ...piece }
+        };
+
         // update piece position and hasMove flag
         const updatedPiece: Piece = {
             ...piece,
@@ -157,5 +165,9 @@ export class Board {
 
         // place on new square
         this.squares.set(to, updatedPiece);
+    }
+
+    getLastMove() {
+        return this.lastMove;
     }
 }

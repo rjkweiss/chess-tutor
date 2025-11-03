@@ -14,6 +14,47 @@ export class Pawn {
         return targetRank === promotionRank;
     }
 
+    /**
+     * Check if a move is an en passant capture
+     */
+
+    isEnPassantMove(targetSquare: Square, board: Board): boolean {
+        const lastMove = board.getLastMove()
+        if (!lastMove) return false;
+
+        // last move must have been a pawn
+        if (lastMove.piece.type !== 'pawn') return false;
+
+        // last move must have been opponent's pawn
+        if (lastMove.piece.color === this.color) return false;
+
+        // pawn must have moved 2 squares
+        const fromRank = rankToIndex(lastMove.from[1])
+        const toRank = rankToIndex(lastMove.to[1]);
+
+        const rankDiff = Math.abs(toRank - fromRank);
+
+        if (rankDiff !== 2) return false;
+
+        // Enemy pawn must be beside our pawn (same rank)
+        const currentFile = fileToIndex(this.position[0]);
+        const currentRank = rankToIndex(this.position[1]);
+
+        const enemyFile = fileToIndex(lastMove.to[0]);
+        const enemyRank = rankToIndex(lastMove.to[1]);
+
+        const isSameRank = currentRank === enemyRank;
+        const isAdjacentFile = Math.abs(currentFile - enemyFile) === 1;
+
+        if (!isSameRank || !isAdjacentFile) return false;
+
+        // Target square must be the square the enemy pawn skipped over
+        const direction = this.color === 'white' ? 1 : -1
+        const enPassantSquare = toSquare(enemyFile, currentRank + direction);
+
+        return targetSquare === enPassantSquare;
+    }
+
     getLegalMoves(board: Board): Square[] {
         const moves: Square[] = [];
 
@@ -69,6 +110,11 @@ export class Pawn {
 
                 // it can capture if there is an enemy piece
                 if (pieceAtCapture && pieceAtCapture.color != this.color) {
+                    moves.push(captureSquare);
+                }
+
+                // En Passant Capture
+                else if (!pieceAtCapture && this.isEnPassantMove(captureSquare, board)) {
                     moves.push(captureSquare);
                 }
             }

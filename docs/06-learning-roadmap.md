@@ -153,7 +153,7 @@ test('rook moves horizontally', () => {
 - [ ] Implement checkmate detection
 - [ ] Implement stalemate detection
 - [ ] Add special moves:
-  - [ ] Castling
+  - [x] Castling
   - [x] Pawn promotion
   - [ ] En passant (optional - can defer)
 - [ ] FEN notation support (writing)
