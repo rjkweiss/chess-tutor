@@ -28,10 +28,10 @@ This roadmap balances **learning** with **building**. Each week focuses on speci
 - [x] Create documentation structure
 - [x] Design data models
 - [x] Set up GitHub repository
-- [ ] Initialize frontend (React + TypeScript)
-- [ ] Initialize backend (FastAPI)
-- [ ] Set up testing frameworks
-- [ ] Write first passing test
+- [x] Initialize frontend (React + TypeScript)
+- [x] Initialize backend (FastAPI)
+- [x] Set up testing frameworks
+- [x] Write first passing test
 
 **Deliverables:**
 - Complete `/docs` folder with all planning documents
@@ -56,14 +56,14 @@ This roadmap balances **learning** with **building**. Each week focuses on speci
 **Focus:** TDD, TypeScript classes, OOP design
 
 **Tasks:**
-- [ ] Implement `Board` class (with tests)
-  - Initialize starting position
-  - Get/set pieces
-  - FEN notation support (reading)
-- [ ] Implement base `Piece` class
-- [ ] Implement `Rook` class with movement logic
-- [ ] Implement `Bishop` class with movement logic
-- [ ] Write comprehensive tests for each class
+- [x] Implement `Board` class (with tests)
+  - [x] Initialize starting position
+  - [x] Get/set pieces
+  - [ ] FEN notation support (reading)
+- [x] Implement base `Piece` class
+- [x] Implement `Rook` class with movement logic
+- [x] Implement `Bishop` class with movement logic
+- [x] Write comprehensive tests for each class
 
 **Deliverables:**
 - Board representation working
@@ -110,12 +110,12 @@ test('rook moves horizontally', () => {
 **Focus:** Complex movement patterns, edge cases
 
 **Tasks:**
-- [ ] Implement `Queen` class (combines Rook + Bishop)
-- [ ] Implement `King` class (one square, cannot move into check)
-- [ ] Implement `Knight` class (L-shape, jumping)
-- [ ] Implement `Pawn` class (forward moves, diagonal captures)
-- [ ] Implement basic check detection
-- [ ] Write tests for all pieces and interactions
+- [x] Implement `Queen` class (combines Rook + Bishop)
+- [x] Implement `King` class (one square, cannot move into check)
+- [x] Implement `Knight` class (L-shape, jumping)
+- [x] Implement `Pawn` class (forward moves, diagonal captures)
+- [x] Implement basic check detection
+- [x] Write tests for all pieces and interactions
 
 **Deliverables:**
 - All pieces move correctly
@@ -153,8 +153,8 @@ test('rook moves horizontally', () => {
 - [ ] Implement checkmate detection
 - [ ] Implement stalemate detection
 - [ ] Add special moves:
-  - [ ] Castling
-  - [ ] Pawn promotion
+  - [x] Castling
+  - [x] Pawn promotion
   - [ ] En passant (optional - can defer)
 - [ ] FEN notation support (writing)
 - [ ] Move history tracking
