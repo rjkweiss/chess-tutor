@@ -1,4 +1,5 @@
 import type { Piece, Square, Color, PieceType } from "./types";
+
 import { Rook } from "./pieces/Rook";
 import { Bishop } from "./pieces/Bishop";
 import { Queen } from "./pieces/Queen";
@@ -103,7 +104,7 @@ export class Board {
                 break;
             case 'king':
                 pieceInstance = new King(piece.color, square);
-                break;
+                return pieceInstance.getLegalMoves(this, false);
             case 'knight':
                 pieceInstance = new Knight(piece.color, square);
                 break;
@@ -137,5 +138,24 @@ export class Board {
             }
         }
         return null;
+    }
+
+    movePiece(from: Square, to: Square): void {
+        const piece = this.getPieceAt(from);
+
+        if (!piece) return;
+
+        // update piece position and hasMove flag
+        const updatedPiece: Piece = {
+            ...piece,
+            position: to,
+            hasMoved: true
+        }
+
+        // remove from old square
+        this.squares.delete(from);
+
+        // place on new square
+        this.squares.set(to, updatedPiece);
     }
 }
