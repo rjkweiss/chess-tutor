@@ -9,7 +9,7 @@ import { Pawn } from "./pieces/Pawn";
 
 export class Board {
     private squares: Map<Square, Piece>;
-    private lastMove: {from: Square; to: Square; piece: Piece} | null = null;
+    private lastMove: { from: Square; to: Square; piece: Piece } | null = null;
 
     constructor(initialize: boolean = true) {
         this.squares = new Map();
@@ -18,7 +18,7 @@ export class Board {
         }
     }
 
-    private initializeBoard():void {
+    private initializeBoard(): void {
         // white pieces back ranks
         this.setupBackRank('white', '1');
         this.setUpPawns('white', '2');
@@ -72,7 +72,6 @@ export class Board {
     }
 
     isSquareUnderAttack(square: Square, byColor: Color): boolean {
-        // get all pieces of attacking color
         for (const [pieceSquare, piece] of this.squares.entries()) {
             if (piece.color === byColor) {
                 // get legal moves for this piece
@@ -93,7 +92,7 @@ export class Board {
         // instantiate appropriate class
         let pieceInstance;
 
-        switch(piece.type) {
+        switch (piece.type) {
             case 'rook':
                 pieceInstance = new Rook(piece.color, square);
                 break;
@@ -105,7 +104,7 @@ export class Board {
                 break;
             case 'king':
                 pieceInstance = new King(piece.color, square);
-                return pieceInstance.getLegalMoves(this, false);
+                return pieceInstance.getAttackSquares(this);
             case 'knight':
                 pieceInstance = new Knight(piece.color, square);
                 break;

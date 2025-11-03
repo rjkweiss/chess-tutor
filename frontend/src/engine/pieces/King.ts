@@ -1,10 +1,10 @@
 import type { Board } from "../Board";
 import type { Color, Square } from "../types";
-import { fileToIndex, rankToIndex, toSquare } from "../utils";
+import { fileToIndex, rankToIndex, isValidSquare, toSquare } from "../utils";
 import { Piece } from "./Piece";
 
 export class King extends Piece {
-    constructor(color: Color, position: Square){
+    constructor(color: Color, position: Square) {
         super(color, position);
     }
 
@@ -30,14 +30,48 @@ export class King extends Piece {
      */
     getLegalMoves(board: Board, includeCastling: boolean = true): Square[] {
         // get normal moves from base class
-        const moves = super.getLegalMoves(board);
+        const baseMoves = super.getLegalMoves(board);
+
 
         // add castling moves if conditions are met
         if (includeCastling) {
             const castlingMoves = this.getCastlingMoves(board);
-            return [...moves, ...castlingMoves];
+            return [...baseMoves, ...castlingMoves];
         }
-        return moves;
+        return baseMoves;
+    }
+
+    /**
+     * Get squares this king attacks (for attack detection only)
+     * Doesn't filter out attacked squares (prevents recursion)
+     */
+    getAttackSquares(board: Board): Square[] {
+        // return super.getLegalMoves(board);
+        const squares: Square[] = [];
+
+        const currentFile = fileToIndex(this.position[0]);
+        const currentRank = rankToIndex(this.position[1]);
+
+        const directions = [
+            [-1, 0], [1, 0], [0, 1], [0, -1],
+            [-1, -1], [1, 1], [-1, 1], [1, -1]
+        ];
+
+        for (const [fileDir, rankDir] of directions) {
+            const file = currentFile + fileDir;
+            const rank = currentRank + rankDir;
+
+            if (isValidSquare(file, rank)) {
+                const targetSquare =  toSquare(file, rank);
+                const pieceAtTarget = board.getPieceAt(targetSquare);
+
+                if (!pieceAtTarget || pieceAtTarget.color !== this.color) {
+                    squares.push(targetSquare);
+                }
+            }
+        }
+
+        return squares;
     }
 
     /**
@@ -112,7 +146,7 @@ export class King extends Piece {
 
             const pathClear = squaresBetween.every(sq => !board.getPieceAt(sq));
 
-            if(pathClear) {
+            if (pathClear) {
                 // king only checks e, d, c
                 const squaresToCheck = [
                     this.position,
