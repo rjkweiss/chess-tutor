@@ -1,0 +1,15 @@
+.board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #312e2b;
+}
+
+.chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, 80px);
+    grid-template-rows: repeat(8, 80px);
+    border: 3px solid #1a1815;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
