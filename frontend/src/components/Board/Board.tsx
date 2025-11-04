@@ -7,13 +7,14 @@ import { King } from "../../engine/pieces/King";
 import { Knight } from "../../engine/pieces/Knight";
 import { Pawn } from "../../engine/pieces/Pawn";
 import { Square as SquareComponent } from "../Square/Square";
-import type { Square as SquareType } from "../../engine/types";
+import type { Square as SquareType, Color } from "../../engine/types";
 import './Board.css';
 
 export const Board = () => {
     // initialize chess engine
-    const [board, setBoard] = useState(() => new ChessBoard());
+    const [board] = useState(() => new ChessBoard());
     const [moveCount, setMoveCount] = useState(0); // Track moves for re-render
+    const [currentTurn, setCurrentTurn] = useState<Color>('white');
     const [selectedSquare, setSelectedSquare] = useState<SquareType | null>(null);
     const [legalMoves, setLegalMoves] = useState<SquareType[]>([]);
 
@@ -56,7 +57,7 @@ export const Board = () => {
 
         // If no piece selected yet, select this piece
         if (!selectedSquare) {
-            if (piece) {
+            if (piece && piece.color === currentTurn) {
                 setSelectedSquare(square);
                 const moves = getLegalMovesForPiece(square);
                 setLegalMoves(moves);
@@ -70,10 +71,13 @@ export const Board = () => {
                 // Force re-render by creating new board reference
                 setMoveCount(moveCount + 1);
 
+                // switch turns
+                setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
+
                 // deselect
                 setSelectedSquare(null);
                 setLegalMoves([]);
-            } else if (piece && piece.color === board.getPieceAt(selectedSquare)?.color) {
+            } else if (piece && piece.color === currentTurn) {
                 // clicked on another piece of same color - switch selection
                 setSelectedSquare(square);
                 const moves = getLegalMovesForPiece(square);
@@ -85,6 +89,10 @@ export const Board = () => {
             }
         }
     };
+
+    // check if either king is in check
+    const isWhiteInCheck = board.isKingInCheck('white');
+    const isBlackInCheck = board.isKingInCheck('black');
 
     // generate all 64 squares
     const squares: SquareType[] = [];
@@ -99,6 +107,24 @@ export const Board = () => {
 
     return (
         <div className="board-container">
+            <div className="game-info">
+                <div className="turn-indicator">
+                    <span className={`turn-text ${currentTurn == 'white' ? 'active': ''}`}>
+                        White
+                    </span>
+                    <span className="turn-divider">|</span>
+                    <span className={`turn-text ${currentTurn === 'black' ? 'active' : ''}`}>
+                        Black
+                    </span>
+                </div>
+                {isWhiteInCheck && currentTurn === 'white' && (
+                    <div className="check-warning">White King in Check!</div>
+                )}
+                {isBlackInCheck && currentTurn === 'black' && (
+                    <div className="check-warning">Black King in Check!</div>
+                )}
+            </div>
+
             <div className="chess-board">
                 {squares.map((square) => {
                     const piece = board.getPieceAt(square);
