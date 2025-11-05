@@ -140,6 +140,84 @@ export class Board {
         return null;
     }
 
+    /**
+     * Get all legal moves for the King(squares it can safely move to)
+     */
+    private getKingEscapeSquares(color: Color): Square[] {
+        const kingSquare  = this.findKing(color);
+        if (!kingSquare) return [];
+
+        const king = this.getPieceAt(kingSquare);
+        if (!king) return [];
+
+        // Get King's pseudo legal moves (adjacent squares)
+        const kingInstance = new King(king.color, kingSquare);
+        const potentialMoves = kingInstance.getLegalMoves(this, false);
+
+
+        // filter to only safe squares
+        const opponentColor = color === 'white' ? 'black' : 'white';
+        const safeMoves: Square[] = [];
+
+        for (const targetSquare of potentialMoves) {
+            // Temporarily move the king to test if square is safe
+            const originalPiece = this.getPieceAt(kingSquare);
+            const capturedPiece = this.getPieceAt(targetSquare);
+
+            // make temporary move
+            this.squares.delete(kingSquare)
+            this.squares.set(targetSquare, { ...originalPiece!, position: targetSquare });
+
+            // Is king safe here?
+            const isSafe = !this.isSquareUnderAttack(targetSquare, opponentColor);
+
+            // undo move
+            this.squares.set(kingSquare, originalPiece!);
+            if (capturedPiece) {
+                this.squares.set(targetSquare, capturedPiece)
+            } else {
+                this.squares.delete(targetSquare);
+            }
+
+            if (isSafe) {
+                safeMoves.push(targetSquare);
+            }
+        }
+
+        return safeMoves;
+    }
+
+    /**
+     * Check if a King is in checkmate
+     */
+    isCheckmate(color: Color): boolean {
+        // King must be in check first
+        if (!this.isKingInCheck(color)) return false;
+
+        // can the King escape?
+        const kingEscapes = this.getKingEscapeSquares(color);
+        if (kingEscapes.length > 0) return false;
+
+        // for now, if king can't escape, it's check mate
+        return true;
+    }
+
+    /**
+     * Check if a King is in checkmate
+     */
+    isStalemate(color: Color): boolean {
+        // must not be in check
+        if (this.isKingInCheck(color)) return false;
+
+        // king has no legal moves
+        const kingEscapes = this.getKingEscapeSquares(color);
+        if (kingEscapes.length > 0) return false;
+
+        // TODO: Also check if ANY other piece can move
+        // For now, just check king
+        return true;
+    }
+
     movePiece(from: Square, to: Square): void {
         const piece = this.getPieceAt(from);
 
