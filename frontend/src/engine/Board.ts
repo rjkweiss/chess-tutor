@@ -10,6 +10,7 @@ import { Pawn } from "./pieces/Pawn";
 export class Board {
     private squares: Map<Square, Piece>;
     private lastMove: { from: Square; to: Square; piece: Piece } | null = null;
+    private simulatingMove: boolean = false;
 
     constructor(initialize: boolean = true) {
         this.squares = new Map();
@@ -144,7 +145,7 @@ export class Board {
      * Get all legal moves for the King(squares it can safely move to)
      */
     private getKingEscapeSquares(color: Color): Square[] {
-        const kingSquare  = this.findKing(color);
+        const kingSquare = this.findKing(color);
         if (!kingSquare) return [];
 
         const king = this.getPieceAt(kingSquare);
@@ -196,10 +197,8 @@ export class Board {
 
         // can the King escape?
         const kingEscapes = this.getKingEscapeSquares(color);
-        if (kingEscapes.length > 0) return false;
 
-        // for now, if king can't escape, it's check mate
-        return true;
+        return kingEscapes.length === 0;
     }
 
     /**
@@ -209,12 +208,22 @@ export class Board {
         // must not be in check
         if (this.isKingInCheck(color)) return false;
 
-        // king has no legal moves
+        //king has no legal moves
         const kingEscapes = this.getKingEscapeSquares(color);
         if (kingEscapes.length > 0) return false;
 
-        // TODO: Also check if ANY other piece can move
-        // For now, just check king
+        // check if any other pieces has legal moves
+        for (const [square, piece] of this.squares.entries()) {
+            if (piece.color === color && piece.type !== 'king') {
+                const moves = this.getPieceLegalMoves(square);
+
+                // If this piece has any moves at all, not stalemate
+                if (moves.length > 0) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 

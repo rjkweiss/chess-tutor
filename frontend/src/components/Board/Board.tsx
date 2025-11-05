@@ -12,11 +12,13 @@ import './Board.css';
 
 export const Board = () => {
     // initialize chess engine
-    const [board] = useState(() => new ChessBoard());
+    const [board, setBoard] = useState(() => new ChessBoard());
     const [moveCount, setMoveCount] = useState(0); // Track moves for re-render
     const [currentTurn, setCurrentTurn] = useState<Color>('white');
     const [selectedSquare, setSelectedSquare] = useState<SquareType | null>(null);
     const [legalMoves, setLegalMoves] = useState<SquareType[]>([]);
+    const [gameStatus, setGameStatus] = useState<'active' | 'checkMate' | 'stalemate'>('active');
+    const [winner, setWinner] = useState<Color | null>(null);
 
     // helper to get legal moves for a piece
     const getLegalMovesForPiece = (square: SquareType): SquareType[] => {
@@ -53,6 +55,9 @@ export const Board = () => {
     };
 
     const handleSquareClick = (square: SquareType) => {
+        // don't allow move is game is over
+        if (gameStatus !== 'active') return;
+
         const piece = board.getPieceAt(square);
 
         // If no piece selected yet, select this piece
@@ -72,7 +77,16 @@ export const Board = () => {
                 setMoveCount(moveCount + 1);
 
                 // switch turns
-                setCurrentTurn(currentTurn === 'white' ? 'black' : 'white');
+                const nextTurn = currentTurn === 'white' ? 'black' : 'white';
+                setCurrentTurn(nextTurn);
+
+                // check for game-over condition
+                if (board.isCheckmate(nextTurn)) {
+                    setGameStatus('checkMate');
+                    setWinner(currentTurn);
+                } else if (board.isStalemate(nextTurn)) {
+                    setGameStatus('stalemate');
+                }
 
                 // deselect
                 setSelectedSquare(null);
@@ -88,6 +102,18 @@ export const Board = () => {
                 setLegalMoves([]);
             }
         }
+    };
+
+    const handleReset = () => {
+        // create new board
+        const newBoard = new ChessBoard();
+        setBoard(newBoard);
+        setMoveCount(0);
+        setCurrentTurn('white');
+        setSelectedSquare(null);
+        setLegalMoves([]);
+        setGameStatus('active');
+        setWinner(null);
     };
 
     // check if either king is in check
@@ -108,20 +134,42 @@ export const Board = () => {
     return (
         <div className="board-container">
             <div className="game-info">
-                <div className="turn-indicator">
-                    <span className={`turn-text ${currentTurn == 'white' ? 'active': ''}`}>
-                        White
-                    </span>
-                    <span className="turn-divider">|</span>
-                    <span className={`turn-text ${currentTurn === 'black' ? 'active' : ''}`}>
-                        Black
-                    </span>
-                </div>
-                {isWhiteInCheck && currentTurn === 'white' && (
+                {gameStatus === 'active' && (
+                    <div className="turn-indicator">
+                        <span className={`turn-text ${currentTurn == 'white' ? 'active' : ''}`}>
+                            White
+                        </span>
+                        <span className="turn-divider">|</span>
+                        <span className={`turn-text ${currentTurn === 'black' ? 'active' : ''}`}>
+                            Black
+                        </span>
+                    </div>
+                )}
+
+                {gameStatus === 'checkMate' && (
+                    <div className="game-over checkmate">
+                        Checkmate! {winner === 'white' ? 'White' : 'Black'} Wins!
+                    </div>
+                )}
+
+                {gameStatus === 'stalemate' && (
+                    <div className="game-over stalemate">
+                        Stalemate! Game is a Draw!
+                    </div>
+                )}
+
+                {gameStatus === 'active' && isWhiteInCheck && currentTurn === 'white' && (
                     <div className="check-warning">White King in Check!</div>
                 )}
-                {isBlackInCheck && currentTurn === 'black' && (
+
+                {gameStatus === 'active' && isBlackInCheck && currentTurn === 'black' && (
                     <div className="check-warning">Black King in Check!</div>
+                )}
+
+                {gameStatus !== 'active' && (
+                    <button className="reset-button" onClick={handleReset}>
+                        New Game
+                    </button>
                 )}
             </div>
 

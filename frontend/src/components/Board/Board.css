@@ -55,14 +55,73 @@
 }
 
 @keyframes pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.7;
     }
 }
 
+.game-over {
+    font-size: 28px;
+    font-weight: bold;
+    padding: 16px 32px;
+    border-radius: 8px;
+    margin: 10px 0;
+    animation: slideIn 0.5s ease-out;
+}
+
+.game-over.checkmate {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.2);
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.game-over.stalemate {
+    color: #87ceeb;
+    background: rgba(135, 206, 235, 0.2);
+    border: 3px solid #87ceeb;
+}
+
+.reset-button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 24px;
+    margin-top: 10px;
+    background: #7fc97f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-button:hover {
+    background: #6ab86a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.reset-button:active {
+    transform: translateY(0);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 
 .chess-board {
     display: grid;
