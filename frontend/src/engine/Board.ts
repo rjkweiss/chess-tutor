@@ -10,7 +10,6 @@ import { Pawn } from "./pieces/Pawn";
 export class Board {
     private squares: Map<Square, Piece>;
     private lastMove: { from: Square; to: Square; piece: Piece } | null = null;
-    private simulatingMove: boolean = false;
 
     constructor(initialize: boolean = true) {
         this.squares = new Map();
