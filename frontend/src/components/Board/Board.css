@@ -1,0 +1,132 @@
+.board-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #312e2b;
+    padding: 20px;
+}
+
+.game-info {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.turn-indicator {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f0d9b5;
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.turn-text {
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.turn-text.active {
+    opacity: 1;
+    transform: scale(1.1);
+    color: #7fc97f;
+}
+
+.turn-divider {
+    opacity: 0.3;
+}
+
+.check-warning {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff6b6b;
+    padding: 8px 16px;
+    background: rgba(255, 107, 107, 0.2);
+    border: 2px solid #ff6b6b;
+    border-radius: 6px;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.game-over {
+    font-size: 28px;
+    font-weight: bold;
+    padding: 16px 32px;
+    border-radius: 8px;
+    margin: 10px 0;
+    animation: slideIn 0.5s ease-out;
+}
+
+.game-over.checkmate {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.2);
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.game-over.stalemate {
+    color: #87ceeb;
+    background: rgba(135, 206, 235, 0.2);
+    border: 3px solid #87ceeb;
+}
+
+.reset-button {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 12px 24px;
+    margin-top: 10px;
+    background: #7fc97f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-button:hover {
+    background: #6ab86a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.reset-button:active {
+    transform: translateY(0);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.chess-board {
+    display: grid;
+    grid-template-columns: repeat(8, 80px);
+    grid-template-rows: repeat(8, 80px);
+    border: 3px solid #1a1815;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}

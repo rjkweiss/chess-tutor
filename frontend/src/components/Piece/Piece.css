@@ -1,0 +1,7 @@
+.piece-image {
+    width: 70px;
+    height: 70px;
+    user-select: none;
+    pointer-events: none;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
