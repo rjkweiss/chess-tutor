@@ -19,6 +19,7 @@ export const Board = () => {
     const [legalMoves, setLegalMoves] = useState<SquareType[]>([]);
     const [gameStatus, setGameStatus] = useState<'active' | 'checkMate' | 'stalemate'>('active');
     const [winner, setWinner] = useState<Color | null>(null);
+    const [invalidMoveMessage, setInvalidMoveMessage] = useState<string | null>(null);
 
     // helper to get legal moves for a piece
     const getLegalMovesForPiece = (square: SquareType): SquareType[] => {
@@ -70,6 +71,20 @@ export const Board = () => {
         } else {
             // piece already selected
             if (legalMoves.includes(square)) {
+
+                // Check if move is truly legal (doesn't leave king in check)
+                if (!board.isMoveLegal(selectedSquare, square, currentTurn)) {
+                    // Illegal move - stays in check or moves into check
+                    setInvalidMoveMessage('Illegal move! This would leave your king in check.');
+
+                    // reset / hide message after 2s
+                    setTimeout(() => setInvalidMoveMessage(null), 2000);
+
+                    setSelectedSquare(null);
+                    setLegalMoves([]);
+                    return;
+                }
+
                 // make a move
                 board.movePiece(selectedSquare, square);
 
@@ -172,6 +187,12 @@ export const Board = () => {
                     </button>
                 )}
             </div>
+
+            {invalidMoveMessage && (
+                <div className="invalid-move-warning">
+                    {invalidMoveMessage}
+                </div>
+            )}
 
             <div className="chess-board">
                 {squares.map((square) => {

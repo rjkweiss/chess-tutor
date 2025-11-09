@@ -139,7 +139,7 @@ export class Board {
     /**
      * Test if a move is legal (doesn't leave own king in check)
      */
-    private isMoveLegal(from: Square, to: Square, color: Color): boolean {
+    isMoveLegal(from: Square, to: Square, color: Color): boolean {
         // save current state
         const movingPiece = this.getPieceAt(from);
         const capturedPiece = this.getPieceAt(to);
