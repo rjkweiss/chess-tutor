@@ -119,6 +119,135 @@ export class Board {
     }
 
     /**
+     * Find all pieces of a given color that are attacking a specific square
+     */
+    private getAttackersOfSquare(square: Square, attackingColor: Color): Square[] {
+        const attackers: Square[] = []
+
+        for (const [pieceSquare, piece] of this.squares.entries()) {
+            if (piece.color === attackingColor) {
+                const legalMoves = this.getPieceLegalMoves(pieceSquare);
+                if (legalMoves.includes(square)) {
+                    attackers.push(pieceSquare);
+                }
+            }
+        }
+
+        return attackers;
+    }
+
+    /**
+     * Test if a move is legal (doesn't leave own king in check)
+     */
+    private isMoveLegal(from: Square, to: Square, color: Color): boolean {
+        // save current state
+        const movingPiece = this.getPieceAt(from);
+        const capturedPiece = this.getPieceAt(to);
+
+        if (!movingPiece) return false;
+
+        // make temporary move
+        this.squares.delete(from);
+        this.squares.set(to, {...movingPiece, position: to});
+
+        // is king stil in check after this move?
+        const stillInCheck = this.isKingInCheck(color);
+
+        // restore
+        this.squares.set(from, movingPiece);
+        if (capturedPiece) {
+            this.squares.set(to, capturedPiece);
+        } else {
+            this.squares.delete(to);
+        }
+
+        return !stillInCheck
+    }
+
+    /**
+     * Get all squares between two positions (for sliding pieces)
+     * Returns empty array if pieces are not on same line or not a sliding attack
+     */
+    private getSquaresBetween(from: Square, to: Square): Square[] {
+        const fromFile = from.charCodeAt(0) - 'a'.charCodeAt(0);
+        const fromRank = parseInt(from[1]) - 1;
+
+        const toFile = to.charCodeAt(0) - 'a'.charCodeAt(0);
+        const toRank = parseInt(to[1]) - 1;
+
+        const fileDiff = toFile - fromFile;
+        const rankDiff = toRank - fromRank;
+
+        // Not on same line (not horizontal, vertical or diagonal)
+        if (fileDiff !== 0 && rankDiff !== 0 && Math.abs(fileDiff) !== Math.abs(rankDiff)) {
+            return [];
+        }
+
+        // determine direction
+        const fileDir = fileDiff === 0 ? 0 : fileDiff > 0 ? 1 : -1;
+        const rankDir = rankDiff === 0 ? 0 : rankDiff > 0 ? 1 : -1;
+
+        const between: Square[] = [];
+        let file = fromFile + fileDir;
+        let rank = fromRank + rankDir;
+
+        // Collect all squares between (not including from and to)
+        while (file !== toFile || rank !== toRank) {
+            const fileChar = String.fromCharCode('a'.charCodeAt(0) + file);
+            const rankChar = (rank + 1).toString();
+            between.push(`${fileChar}${rankChar}` as Square);
+
+            file += fileDir;
+            rank += rankDir;
+        }
+
+        return between;
+    }
+
+    /**
+     * Check if any piece can block or capture to get out of check
+     */
+    private canBlockOrCaptureCheck(color: Color): boolean {
+        const kingSquare = this.findKing(color);
+
+        if (!kingSquare) return false;
+
+        const opponentColor = color === 'white' ? 'black' : 'white';
+        const attackers = this.getAttackersOfSquare(kingSquare, opponentColor);
+
+        // if more than one attacker, can only escape -- can't block or capture
+        if (attackers.length > 1) return false;
+
+        // get first attacker
+        const attackerSquare = attackers[0];
+
+        // get squares between attacker and king
+        const blockableSquares = this.getSquaresBetween(attackerSquare, kingSquare);
+
+        // for each friendly piece (except king) -- check if we can block or capture attacking pieces
+        for (const [square, piece] of this.squares.entries()) {
+            if (piece.color === color && piece.type !== 'king') {
+                const moves = this.getPieceLegalMoves(square);
+
+                for (const targetSquare of moves) {
+                    // can we capture attacker
+                    if (targetSquare === attackerSquare) {
+                        // is this capture legal?
+                        if (this.isMoveLegal(square, targetSquare, color)) return true;
+                    }
+
+                    // can we block attacker? (only works for sliding pieces)
+                    if (blockableSquares.includes(targetSquare)) {
+                        if (this.isMoveLegal(square, targetSquare, color)) return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Check if a king of a specified color is in check
      */
     isKingInCheck(color: Color): boolean {
@@ -196,8 +325,12 @@ export class Board {
 
         // can the King escape?
         const kingEscapes = this.getKingEscapeSquares(color);
+        if (kingEscapes.length > 0) return false;
 
-        return kingEscapes.length === 0;
+        // can any piece block or capture the attacker?
+        if (this.canBlockOrCaptureCheck(color)) return false;
+
+        return true;
     }
 
     /**
@@ -211,14 +344,14 @@ export class Board {
         const kingEscapes = this.getKingEscapeSquares(color);
         if (kingEscapes.length > 0) return false;
 
-        // check if any other pieces has legal moves
+        // check if any other pieces has truly legal moves
         for (const [square, piece] of this.squares.entries()) {
             if (piece.color === color && piece.type !== 'king') {
-                const moves = this.getPieceLegalMoves(square);
+                const pseudoLegalMoves = this.getPieceLegalMoves(square);
 
-                // If this piece has any moves at all, not stalemate
-                if (moves.length > 0) {
-                    return false;
+                // check if every move can truly be legal
+                for (const targetSquare of pseudoLegalMoves) {
+                    if (this.isMoveLegal(square, targetSquare, color)) return false;
                 }
             }
         }
